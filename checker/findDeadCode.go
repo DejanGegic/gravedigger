@@ -8,25 +8,25 @@ import (
 )
 
 func FindDeadCode() {
-	for _, checker := range checkerList {
+	for _, goFile := range fileList {
 		// skip tests
-		if checker.IsTest {
+		if goFile.IsTest {
 			continue
 		}
-		deadCodeSingleChecker(checker.Path)
+		deadCodeSingleChecker(goFile.Path)
 	}
 }
 
 func deadCodeSingleChecker(path string) {
 
 	// scan checker line by line
-	checkerToScan, err := os.Open(path)
+	fileToScan, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer checkerToScan.Close()
-	scanner := bufio.NewScanner(checkerToScan)
+	defer fileToScan.Close()
+	scanner := bufio.NewScanner(fileToScan)
 
 	lineNumber := uint32(0)
 	for scanner.Scan() {
