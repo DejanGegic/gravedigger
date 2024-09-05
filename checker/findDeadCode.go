@@ -34,7 +34,8 @@ func deadCodeSingleChecker(path string) {
 		line := scanner.Text()
 		// go through all keys of map FunctionsList
 		for key, value := range FunctionsList {
-			// TODO: Include a check for packages. There might be 2 "delete" functions in separate packages
+			// ! Slowest part of the whole codebase, taking over 85% of CPU TIME
+			// TODO: Parallelize using a pool
 			if strings.Contains(line, value.Name) && !strings.HasPrefix(line, "func ") {
 
 				if !value.IsAMethod {
