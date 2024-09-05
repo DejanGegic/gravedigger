@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/dejangegic/gravedigger/file"
+	"github.com/dejangegic/gravedigger/checker"
 	"github.com/spf13/cobra"
 )
 
@@ -20,7 +20,7 @@ var rootCMD = &cobra.Command{
 		} else {
 			path = args[0]
 		}
-		file.RunAll(path)
+		checker.RunAll(path)
 	},
 }
 

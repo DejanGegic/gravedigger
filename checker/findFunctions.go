@@ -1,4 +1,4 @@
-package file
+package checker
 
 import (
 	"bufio"
@@ -11,33 +11,35 @@ type FunctionData struct {
 	Package   string
 	Name      string
 	Line      uint32
+	IsAMethod bool
 	Instances []FunctionInstance
 }
 type FunctionInstance struct {
-	Path string
-	Line uint32
+	Path    string
+	Line    uint32
+	Package string
 }
 
 var FunctionsList = make(map[string]FunctionData, 0)
 
 func FindAllFunctionDeclarations() {
-	for _, file := range FileList {
-		if file.IsTest {
+	for _, checker := range checkerList {
+		if checker.IsTest {
 			continue
 		}
-		FindAllFunctionsInAFile(file.Path)
+		FindAllFunctionsInAchecker(checker.Path)
 	}
 }
 
-func FindAllFunctionsInAFile(path string) {
-	// scan file line by line
-	fileToScan, err := os.Open(path)
+func FindAllFunctionsInAchecker(path string) {
+	// scan checker line by line
+	checkerToScan, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	defer fileToScan.Close()
-	scanner := bufio.NewScanner(fileToScan)
+	defer checkerToScan.Close()
+	scanner := bufio.NewScanner(checkerToScan)
 
 	var lineNumber uint32 = 0
 	for scanner.Scan() {
@@ -45,26 +47,34 @@ func FindAllFunctionsInAFile(path string) {
 		line := scanner.Text()
 		if strings.HasPrefix(line, "func ") {
 
-			filePathSplit := strings.Split(path, "/")
-			currentPackage := filePathSplit[len(filePathSplit)-2]
+			currentPackage := getCurrentPackage(path)
 
 			var functionName string
+			var isAMethod bool = false
 			// depending on if its an interface implementation or not
 			if strings.HasPrefix(line, "func (") {
 				functionName = strings.Split(line, ")")[1]
 				functionName = strings.Split(functionName, "(")[0]
 				functionName = strings.Split(functionName, " ")[1]
 
+				isAMethod = true
 			} else {
 				functionName = strings.Split(line, " ")[1]
 				functionName = strings.Split(functionName, "(")[0]
 			}
 
 			FunctionsList[path+"|"+functionName] = FunctionData{
-				Package: currentPackage,
-				Name:    functionName,
-				Line:    lineNumber,
+				Package:   currentPackage,
+				Name:      functionName,
+				Line:      lineNumber,
+				IsAMethod: isAMethod,
 			}
 		}
 	}
+}
+
+func getCurrentPackage(path string) string {
+	checkerPathSplit := strings.Split(path, "/")
+	currentPackage := checkerPathSplit[len(checkerPathSplit)-2]
+	return currentPackage
 }
