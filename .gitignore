@@ -1,4 +1,12 @@
+# directories
 data
 main
+dist
+
+# files
+main
 gravedigger
+build.sh
+
+# file types
 *.pprof
