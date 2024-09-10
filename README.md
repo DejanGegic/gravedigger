@@ -8,11 +8,11 @@
 
 I have pre-compiled binaries for Windows, macOS and Linux. Please rename them to `gravedigger` after proceeding if you do not plan on compiling them yourself.
 
-## Go Installation (Required to have Go installed on your system)
+<!-- ## Go Installation (Required to have Go installed on your system)
 
 This works on all platforms.  
 Run `go install github.com/dejangegic/gravedigger@latest` in the terminal.  
-Make sure that the go bin is in your PATH.
+Make sure that the go bin is in your PATH. -->
 
 ### Run binaries directly
 
